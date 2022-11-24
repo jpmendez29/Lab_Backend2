@@ -48,8 +48,7 @@ export function App() {
 
     // CONEXION MONGO
     mongoose.connect(
-        "mongodb+srv://"+user+":"+pasw+"pn@labbackend.wsxmbzf.mongodb.net/Twitter?retryWrites=true&w=majority"
-        )
+        "mongodb+srv://"+user+":"+pasw+"pn@labbackend.wsxmbzf.mongodb.net/Amazon?retryWrites=true&w=majority")
     .then(() => {
         console.log("Conectado a la base de datos");
     })
