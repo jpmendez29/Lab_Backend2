@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import userRoutes from './user/user.route.js'; // falta usuarios
-require('dotenv').config();
+import userRoutes from './Usuarios/Usuarios.route.js'; 
+import {} from 'dotenv/config'
+
 const [user,pasw] = [process.env.USER, process.env.PASW]
 
 
@@ -38,7 +39,6 @@ export function TestApp() {
     app.use(async (req, res) => {
         res.status(404).json({message: "Not found."})
     });
-
     return app
 }
 

@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const CarSchema = require("../Carro_compra/Carro_compra.model")
+import mongoose from 'mongoose'
+import CarSchema from "../Carro_compra/Carro_compra.model.js"
 
 const HistorialSchema = new mongoose.Schema(
     {
@@ -10,4 +10,4 @@ const HistorialSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Historial", HistorialSchema, "Historial");
+export default mongoose.model("Historial", HistorialSchema, "Historial");

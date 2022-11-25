@@ -1,5 +1,6 @@
 {
   "name": "lab_backend2",
+  "type": "module",
   "version": "1.0.0",
   "description": "proyecto#2 back-end",
   "main": "index.js",
