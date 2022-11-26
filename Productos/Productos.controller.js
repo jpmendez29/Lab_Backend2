@@ -66,6 +66,7 @@ export async function CreateProduct(body) {
         {   Nombre: body.Nombre, 
             Precio: body.Precio,
             id_Categoria: id_cat._id,
+            id_usuario: id_usuario //login token
         }
         );
     await Producto.save()
