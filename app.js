@@ -1,8 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './Usuarios/Usuarios.route.js'; 
+import CatRoutes from './Categorias de productos/Cat_Productos.route.js'; 
 import {} from 'dotenv/config'
-import jwt from 'jsonwebtoken'
 
 const [user,pasw] = [process.env.USER, process.env.PASW]
 
@@ -24,8 +24,10 @@ export function TestApp() {
         next();
     });
 
-    
+    // rutas
     app.use('/Users', userRoutes)
+    
+    app.use('/Categ', CatRoutes)
 
     app.use(async (req, res) => {
         res.status(404).json({message: "Not found."})

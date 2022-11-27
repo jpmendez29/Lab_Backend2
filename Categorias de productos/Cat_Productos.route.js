@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetCat, CreatCat, ActCat, DelCat} from "./Cat_Productos.controller"
+import {GetCat, CreatCat, ActCat, DelCat} from "./Cat_Productos.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 const router = express.Router();
 
