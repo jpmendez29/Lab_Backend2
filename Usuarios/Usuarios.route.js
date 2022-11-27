@@ -48,9 +48,9 @@ router.patch('/', checkauth, async (req, res)=> {
 // ****************** DELETE ******************
 
 
-// Borrar una publicacion de un usuario especifico, por medio del titulo de la publicacion
+// Borrar un usuario (token)
 router.delete('/',checkauth, async (req, res)=> {
-    const us = await DelUs(req, res) // _id_producto
+    const us = await DelUs(req, res)
     res.status(200).json(us)
 });
 export default router;
