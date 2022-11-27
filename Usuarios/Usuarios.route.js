@@ -1,22 +1,56 @@
 import express from 'express'
-import {createUser, getUsers, logIn} from "./Usuarios.controller.js"
+import {createUser, getUsers, logIn, getUserslog, ActUs, DelUs} from "./Usuarios.controller.js"
+import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
 
+
+// ****************** GET ******************
+
+
+// Mostrar todos los Usuarios
 router.get('/', async (req, res) => {
-    const users = await getUsers(req.query, res)
+    const users = await getUsers()
     res.status(200).json(users)
 });
 
-router.post('/', async (req, res) => {
+// Mostrar el usuario de la sesion
+router.get('/Logus', checkauth, async (req, res) => {
+    const users = await getUserslog(req, res)
+    res.status(200).json(users)
+});
+
+
+// ****************** POST ******************
+
+// crear un usuario (registro)
+router.post('/CreateUs', async (req, res) => {
     const data = await createUser(req.body, res)
     res.status(200).json(data)
 });
 
+// Iniciar sesion 
 router.post('/login', async (req, res) => {
-    const data = await logIn(req.body, res)
-    res.status(200).json(data)
+    const Token = await logIn(req.body, res)
+    res.status(200).json(Token)
+});
+
+// ****************** PATCH ******************
+
+
+// Actualizar usuario (token)
+router.patch('/', checkauth, async (req, res)=> {
+    const us = await ActUs(req, res) // Nombre categoria, Nombre producto y Precio producto
+    res.status(200).json(us)
 });
 
 
+// ****************** DELETE ******************
+
+
+// Borrar una publicacion de un usuario especifico, por medio del titulo de la publicacion
+router.delete('/',checkauth, async (req, res)=> {
+    const us = await DelUs(req, res) // _id_producto
+    res.status(200).json(us)
+});
 export default router;
