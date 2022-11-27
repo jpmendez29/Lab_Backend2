@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './Usuarios/Usuarios.route.js'; 
 import {} from 'dotenv/config'
+import jwt from 'jsonwebtoken'
 
 const [user,pasw] = [process.env.USER, process.env.PASW]
 
@@ -23,18 +24,8 @@ export function TestApp() {
         next();
     });
 
-
-    /* // DECLARACION DE RUTA
-    const routeUs = require('./Rutas/Rutas_Usuarios')
-    const routePub = require('./Rutas/Rutas_Publicaciones')
-    const routeSeg = require('./Rutas/Rutas_Seguimientos')
-    const routeLikes = require('./Rutas/Rutas_Likes')
-    app.use("/Usuarios", routeUs)
-    app.use("/Publicaciones", routePub)
-    app.use("/Seguimientos", routeSeg)
-    app.use("/Likes", routeLikes) */
     
-    app.use('/users', userRoutes)
+    app.use('/Users', userRoutes)
 
     app.use(async (req, res) => {
         res.status(404).json({message: "Not found."})
