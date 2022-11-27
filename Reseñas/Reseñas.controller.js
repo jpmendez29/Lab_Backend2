@@ -65,7 +65,7 @@ export async function CrearRes(req) {
 
 // Actualiza una reseña (token)
 export async function ActRes(req){
-    const Us = await UsersModel.findByIdAndUpdate({_id: req.body._id}, {Reseña:req.body.res, Puntuacion: req.body.punt})
+    const Us = await ReseñasModel.findByIdAndUpdate({_id: req.body._id}, {Reseña:req.body.res, Puntuacion: req.body.punt})
     return ("se actualizo la reseña")
 }
 

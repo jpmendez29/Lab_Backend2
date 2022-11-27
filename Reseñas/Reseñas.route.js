@@ -44,8 +44,8 @@ router.post('/', checkauth, async (req, res) => {
 
 // Actualizar reseña (token)
 router.patch('/', checkauth, async (req, res)=> {
-    const us = await ActRes(req, res)
-    res.status(200).json(us)
+    const Res = await ActRes(req, res)
+    res.status(200).json(Res)
 });
 
 
