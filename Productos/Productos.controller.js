@@ -10,24 +10,20 @@ export async function ProdAll(){
 }
 
 
-// Mostrar productos de un usuario  //revisar
+// Mostrar productos de un usuario
 export async function ProdUs(body) {
-    const usuario = await UsModel.findById({_id: body._id})
-    const Prod = await ProdModel.aggregate([
-        {$lookup:{
-            from: "Usuarios",
-            localField: "_id",
-            foreignField: "id_Producto",
-            //pipeline: [{$project: { _id: 0, id_Usuario: 0, createdAt:0}}],
-            as: "Product"
-            },  
-        },
-        { $match: {_id: usuario.id_Producto}},
-        { $unwind: "$Product"}
-    ])
-    const Productos = Prod.map(x => x.Product)
+    const prod = await ProdModel.find({Id_Usuario: body._idus})
     console.log("se Mostraron los productos de un usuario")
     return Productos
+}
+
+// Mostrar productos de un usuario (token)
+export async function ProdUsT(req) {
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const prod = await ProdModel.find({Id_Usuario: tokendata._id})
+    console.log("se Mostraron los productos de un usuario")
+    return prod
 }
 
 
@@ -66,7 +62,7 @@ export async function CreateProduct(body) {
         {   Nombre: body.Nombre, 
             Precio: body.Precio,
             id_Categoria: id_cat._id,
-            id_usuario: id_usuario //login token
+            id_usuario: body._idus 
         }
         );
     await Producto.save()
