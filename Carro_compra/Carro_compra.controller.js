@@ -48,7 +48,7 @@ export async function CompCar(req) {
     if (Car){
         const Hist = new HistModel(
             {  
-            Hist: [Car[0]],
+            Historial: [Car[0]],
             Id_Usuario: tokendata._id
             }
             );
