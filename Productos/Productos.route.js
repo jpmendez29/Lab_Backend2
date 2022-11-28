@@ -53,7 +53,7 @@ router.get('/ProdCat', async (req, res) => {
 
 
 // Crear un producto (token)
-router.post('', checkauth , async (req, res)=> {
+router.post('/', checkauth , async (req, res)=> {
     const Prod = await CreateProduct(req) // Nombre categoria, Nombre producto y Precio producto
     res.status(200).json(Prod)
 });

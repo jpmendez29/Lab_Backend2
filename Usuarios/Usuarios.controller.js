@@ -34,7 +34,24 @@ export async function logIn(body) {
     }else{
         return("usuario o contraseña incorrectos")
     }
+}
 
+
+// Inicia sesion (con token)
+export async function logInT(body) {
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Us = await UsersModel.findById(tokendata._id)
+    if (Us){
+        if (Us[0].Contraseña == body.pasw){
+            return Signtoken(Us[0]) //token nuevo tiempo expiracion
+        }else{
+            console.log("usuario o contraseña incorrectos")
+            return ("usuario o contraseña incorrectos")
+        }
+        }else{
+            return("usuario o contraseña incorrectos")
+        }
 }
 
 

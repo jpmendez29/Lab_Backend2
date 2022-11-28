@@ -1,5 +1,5 @@
 import express from 'express'
-import {createUser, getUsers, logIn, getUserslog, ActUs, DelUs} from "./Usuarios.controller.js"
+import {createUser, getUsers, logIn, getUserslog, ActUs, DelUs, logInT} from "./Usuarios.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
@@ -32,6 +32,11 @@ router.post('/CreateUs', async (req, res) => {
 // Iniciar sesion 
 router.post('/login', async (req, res) => {
     const Token = await logIn(req.body, res)
+    res.status(200).json(Token)
+});
+
+router.post('/login',checkauth, async (req, res) => {
+    const Token = await logInT(req)
     res.status(200).json(Token)
 });
 
