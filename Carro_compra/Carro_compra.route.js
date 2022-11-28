@@ -1,23 +1,43 @@
 import express from 'express'
-import {createUser, getUsers, logIn} from "./Carro_compra.controller.js"
+import {GetCar, AddCar, DelProdCar, CompCar} from "./Carro_compra.controller.js"
+import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const users = await getUsers(req.query, res)
-    res.status(200).json(users)
+
+// ****************** GET ******************
+
+// se obtiene el carrito
+router.get('/',checkauth, async (req, res) => {
+    const Car = await GetCar(req)
+    res.status(200).json(Car)
 });
 
-router.post('/', async (req, res) => {
-    const data = await createUser(req.body, res)
 
-    res.status(200).json(data)
+// ****************** POST ******************
+
+// Se añaden productos al carrito
+router.post('/',checkauth, async (req, res) => {
+    const Car = await AddCar(req)
+    res.status(200).json(Car)
 });
 
-router.post('/login', async (req, res) => {
-    const data = await logIn(req.body, res)
-    res.status(200).json(data)
+
+// ****************** PATCH ******************
+
+// Compra carrito / agregar historial de compra 
+router.patch('/',checkauth, async (req, res) => {
+    const Car = await CompCar(req)
+    res.status(200).json(Car)
 });
 
+
+// ****************** DELETE ******************
+
+// se elimina el carrito
+router.delete('/',checkauth, async (req, res) => {
+    const Car = await DelProdCar(req)
+    res.status(200).json(Car)
+});
 
 export default router;
