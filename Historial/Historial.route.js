@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetHist} from "./Historial.controller"
+import {GetHist} from "./Historial.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();

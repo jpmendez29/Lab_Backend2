@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import CarSchema from "../Carro_compra/Carro_compra.model.js"
-//Historial: {type: [], default: undefined},
+
 const HistorialSchema = new mongoose.Schema(
     {
-    Hist: [{type: CarSchema, required: true}],
+    Historial: {type: [CarSchema.schema], default: undefined},
     Id_Usuario: {type: mongoose.Types.ObjectId, trim: true, required: true, unique: true}
     },
     {
