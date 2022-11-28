@@ -35,7 +35,7 @@ router.get('/ProdIn', async (req, res) => {
 
 
 // Mostrar producto segun nombre  
-router.get('/ProdIn', async (req, res) => {
+router.get('/ProdName', async (req, res) => {
     const Prod = await ProdNom(req.body) // Nombre Producto
     res.status(200).json(Prod)
 });
@@ -53,7 +53,7 @@ router.get('/ProdCat', async (req, res) => {
 
 
 // Crear un producto (token)
-router.post('/', checkauth , async (req, res)=> {
+router.post('', checkauth , async (req, res)=> {
     const Prod = await CreateProduct(req) // Nombre categoria, Nombre producto y Precio producto
     res.status(200).json(Prod)
 });
@@ -65,7 +65,7 @@ router.post('/', checkauth , async (req, res)=> {
 
 // Actualiza el producto (token)
 router.patch('/',checkauth, async (req, res)=> {
-    const Prod = await ActProd(req.body) // Nombre categoria, Nombre producto y Precio producto
+    const Prod = await ActProd(req) // Nombre categoria, Nombre producto y Precio producto
     res.status(200).json(Prod)
 });
 
@@ -76,7 +76,7 @@ router.patch('/',checkauth, async (req, res)=> {
 
 // Borrar un producto (token)
 router.delete('/',checkauth, async (req, res)=> {
-    const Prod = await DelProd(req.body) // _id_producto
+    const Prod = await DelProd(req) // _id_producto
     res.status(200).json(Prod)
 });
 

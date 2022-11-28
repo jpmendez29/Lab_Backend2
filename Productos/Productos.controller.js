@@ -74,15 +74,19 @@ export async function CreateProduct(req) {
 
 
 // Actualizar un Producto
-export async function ActProd(body){
-    const id_cat = await CatModel.find({Nombre: body.CatName})
-    const Prod = await ProdModel.findOneAndUpdate({_id: body._id},{Nombre: body.Nombre, Precio: body.Precio, id_Categoria: id_cat[0]._id})
+export async function ActProd(req){
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const id_cat = await CatModel.find({Nombre: req.body.CatName})
+    const Prod = await ProdModel.findOneAndUpdate({_id: body._id, Id_Usuario:tokendata._id },{Nombre: req.body.Nombre, Precio: req.body.Precio, id_Categoria: id_cat[0]._id})
     return ("se actualizo el prodcuto")
 }
 
 
 // Borrar una Producto
-export async function DelProd(body){
-    const Prod = await PubModel.findOneAndDelete({_id: body._id})
+export async function DelProd(req){
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Prod = await PubModel.findOneAndDelete({_id: req.body._id, Id_Usuario:tokendata._id})
     return ('el producto fue borrado con exito')
 }
