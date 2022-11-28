@@ -1,92 +1,92 @@
 import ProdModel from "./Productos.model.js";
 import CatModel from "../Categorias de productos/Cat_Productos.model.js";
-
+import {Verifytoken} from "../helper/generatetoken.js"
 
 // Mostrar todos los productos
 export async function ProdAll(){
-    const prod = await ProdModel.find()
+    const Prod = await ProdModel.find()
     console.log("se Mostraron todos los productos")
-    return prod
+    return Prod
 }
 
 
-// Mostrar productos de un usuario  //revisar
+// Mostrar productos de un usuario
 export async function ProdUs(body) {
-    const usuario = await UsModel.findById({_id: body._id})
-    const Prod = await ProdModel.aggregate([
-        {$lookup:{
-            from: "Usuarios",
-            localField: "_id",
-            foreignField: "id_Producto",
-            //pipeline: [{$project: { _id: 0, id_Usuario: 0, createdAt:0}}],
-            as: "Product"
-            },  
-        },
-        { $match: {_id: usuario.id_Producto}},
-        { $unwind: "$Product"}
-    ])
-    const Productos = Prod.map(x => x.Product)
+    const Prod = await ProdModel.find({Id_Usuario: body._idus})
     console.log("se Mostraron los productos de un usuario")
-    return Productos
+    return Prod
+}
+
+// Mostrar productos de un usuario (token)
+export async function ProdUsT(req) {
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Prod = await ProdModel.find({Id_Usuario: tokendata._id})
+    console.log("se Mostraron los productos de un usuario")
+    return Prod
 }
 
 
 // Mostrar producto individual 
 export async function ProdIn(body){
-    const prod = await ProdModel.findById(body._id)
+    const Prod = await ProdModel.findById(body._id)
     console.log("se Mostro el productos individual")
-    return prod
+    return Prod
 }
 
 
 // Mostrar producto segun nombre 
 export async function ProdNom(body){
-    const prod = await ProdModel.find({Nombre: body.Nombre})
-    console.log("se Mostraron los productos segun Nombre")
-    return prod
+    const Prod = await ProdModel.find({Nombre: body.ProdName})
+    console.log("se mostraron los productos segun Nombre")
+    return Prod
 }
 
 
 // Mostrar producto segun categoria 
 export async function ProdCat(body){
-    const cat = await CatModel.find({Nombre: body.CatName})
-    const prod = await ProdModel.find({id_Categoria: cat._id})
+    const id_cat = await CatModel.find({Nombre: body.CatName})
+    const Prod = await ProdModel.find({id_Categoria: id_cat[0]._id})
     /* otra opcion es recibir el id de la categoria directamente
     const prod = await ProdModel.find({id_Categoria: body.Catid})
     */
     console.log("se Mostraron los productos segun categoria")
-    return prod
+    return Prod
 }
 
 
 // Crear un producto
-export async function CreateProduct(body) {
-    const id_cat = await CatModel.find(body.CatName)
-    const Producto = new ProdModel(
-        {   Nombre: body.Nombre, 
-            Precio: body.Precio,
-            id_Categoria: id_cat._id,
-            id_usuario: id_usuario //login token
+export async function CreateProduct(req) {
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const id_cat = await CatModel.find({Nombre: req.body.CatName})
+    const Prod = new ProdModel(
+        {   Nombre: req.body.Nombre, 
+            Precio: req.body.Precio,
+            Id_Categoria: id_cat[0]._id,
+            Id_Usuario: tokendata._id 
         }
         );
-    await Producto.save()
+    await Prod.save()
     console.log("Producto creado con exito")
-    return Producto
+    return Prod
 }
 
 
 // Actualizar un Producto
-export async function ActProd(body){
-    const cat = await CatModel.find({Nombre: body.CatName})
-    const Prod = await ProdModel.findOneAndUpdate({_id: body._id},{Nombre: body.Nombre, Precio: body.Precio, id_Categoria: cat._id})
-    console.log("se actualizo el prodcuto")
-    return prod
+export async function ActProd(req){
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const id_cat = await CatModel.find({Nombre: req.body.CatName})
+    const Prod = await ProdModel.findOneAndUpdate({_id: req.body._id, Id_Usuario:tokendata._id },{Nombre: req.body.Nombre, Precio: req.body.Precio, id_Categoria: id_cat[0]._id})
+    return ("se actualizo el prodcuto")
 }
 
 
 // Borrar una Producto
-export async function DelProd(body){
-    const prod = await PubModel.findOneAndDelete({_id: body._id})
-    console.log('el producto fue borrado con exito')
-    return prod
+export async function DelProd(req){
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Prod = await ProdModel.findOneAndDelete({_id: req.body._id, Id_Usuario:tokendata._id})
+    return ('el producto fue borrado con exito')
 }

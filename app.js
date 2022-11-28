@@ -1,8 +1,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import userRoutes from './Usuarios/Usuarios.route.js'; 
 import {} from 'dotenv/config'
-import jwt from 'jsonwebtoken'
+import userRoutes from './Usuarios/Usuarios.route.js'; 
+import CatRoutes from './Categorias de productos/Cat_Productos.route.js'; 
+import ProdRoutes from './Productos/Productos.route.js';
+import ResRoute from './Reseñas/Reseñas.route.js'
+import HistRoute from './Historial/Historial.route.js'
+import CarRoute from './Carro_compra/Carro_compra.route.js'
+
+
 
 const [user,pasw] = [process.env.USER, process.env.PASW]
 
@@ -24,8 +30,13 @@ export function TestApp() {
         next();
     });
 
-    
-    app.use('/Users', userRoutes)
+    // rutas
+    app.use('/Users', userRoutes) // Usuarios
+    app.use('/Prod', ProdRoutes) // Productos
+    app.use('/Categ', CatRoutes) // Categorias
+    app.use('/Res', ResRoute) // Reseñas
+    app.use('/Hist', HistRoute) // Historial
+    app.use('/Car', CarRoute) // Carro de compra
 
     app.use(async (req, res) => {
         res.status(404).json({message: "Not found."})

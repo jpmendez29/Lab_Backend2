@@ -1,5 +1,5 @@
 import express from 'express'
-import {createUser, getUsers, logIn, getUserslog, ActUs, DelUs} from "./Usuarios.controller.js"
+import {createUser, getUsers, logIn, getUserslog, ActUs, DelUs, logInT} from "./Usuarios.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
@@ -35,6 +35,11 @@ router.post('/login', async (req, res) => {
     res.status(200).json(Token)
 });
 
+router.post('/login',checkauth, async (req, res) => {
+    const Token = await logInT(req)
+    res.status(200).json(Token)
+});
+
 // ****************** PATCH ******************
 
 
@@ -48,9 +53,9 @@ router.patch('/', checkauth, async (req, res)=> {
 // ****************** DELETE ******************
 
 
-// Borrar una publicacion de un usuario especifico, por medio del titulo de la publicacion
+// Borrar un usuario (token)
 router.delete('/',checkauth, async (req, res)=> {
-    const us = await DelUs(req, res) // _id_producto
+    const us = await DelUs(req, res)
     res.status(200).json(us)
 });
 export default router;
