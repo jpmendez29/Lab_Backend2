@@ -1,6 +1,6 @@
 import ProdModel from "./Productos.model.js";
 import CatModel from "../Categorias de productos/Cat_Productos.model.js";
-
+import {Verifytoken} from "../helper/generatetoken.js"
 
 // Mostrar todos los productos
 export async function ProdAll(){
@@ -63,8 +63,8 @@ export async function CreateProduct(req) {
     const Prod = new ProdModel(
         {   Nombre: req.body.Nombre, 
             Precio: req.body.Precio,
-            id_Categoria: id_cat[0]._id,
-            id_usuario: tokendata._id 
+            Id_Categoria: id_cat[0]._id,
+            Id_Usuario: tokendata._id 
         }
         );
     await Prod.save()
@@ -78,7 +78,7 @@ export async function ActProd(req){
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
     const id_cat = await CatModel.find({Nombre: req.body.CatName})
-    const Prod = await ProdModel.findOneAndUpdate({_id: body._id, Id_Usuario:tokendata._id },{Nombre: req.body.Nombre, Precio: req.body.Precio, id_Categoria: id_cat[0]._id})
+    const Prod = await ProdModel.findOneAndUpdate({_id: req.body._id, Id_Usuario:tokendata._id },{Nombre: req.body.Nombre, Precio: req.body.Precio, id_Categoria: id_cat[0]._id})
     return ("se actualizo el prodcuto")
 }
 
@@ -87,6 +87,6 @@ export async function ActProd(req){
 export async function DelProd(req){
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
-    const Prod = await PubModel.findOneAndDelete({_id: req.body._id, Id_Usuario:tokendata._id})
+    const Prod = await ProdModel.findOneAndDelete({_id: req.body._id, Id_Usuario:tokendata._id})
     return ('el producto fue borrado con exito')
 }

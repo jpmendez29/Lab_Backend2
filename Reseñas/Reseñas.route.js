@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetRes, GetResUs, GetResProd, GetResPunt, CrearRes, ActRes} from "./Reseñas.controller.js"
+import {GetRes, GetResUs, GetResProd, GetResPunt, CrearRes, ActRes, DelRes} from "./Reseñas.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
@@ -40,7 +40,6 @@ router.post('/', checkauth, async (req, res) => {
 });
 
 // ****************** PATCH ******************
-// ************* NO ESPECIFICADO ****************
 
 // Actualizar reseña (token)
 router.patch('/', checkauth, async (req, res)=> {

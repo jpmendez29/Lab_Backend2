@@ -65,7 +65,9 @@ export async function CrearRes(req) {
 
 // Actualiza una reseña (token)
 export async function ActRes(req){
-    const Us = await ReseñasModel.findByIdAndUpdate({_id: req.body._id}, {Reseña:req.body.res, Puntuacion: req.body.punt})
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Us = await ReseñasModel.findByIdAndUpdate({_id: req.body._id, Id_Usuario: tokendata._id }, {Reseña:req.body.res, Puntuacion: req.body.punt})
     return ("se actualizo la reseña")
 }
 
@@ -74,6 +76,6 @@ export async function ActRes(req){
 export async function DelRes(req){
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
-    const Us = await ReseñasModel.findOneAndDelete({_id: body._id, Id_Usuario: tokendata._id})
+    const Us = await ReseñasModel.findOneAndDelete({_id: req.body._id, Id_Usuario: tokendata._id})
     return ('La reseña fue borrada con exito')
 }

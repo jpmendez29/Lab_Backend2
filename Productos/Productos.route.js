@@ -1,5 +1,5 @@
 import express from 'express'
-import {CreateProduct, ProdAll, ProdUs, ProdIn, ProdNom, ProdCat, ActProd, DelProd} from "./Productos.controller.js"
+import {CreateProduct, ProdAll, ProdUs, ProdUsT, ProdIn, ProdNom, ProdCat, ActProd, DelProd} from "./Productos.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 const router = express.Router();
 
