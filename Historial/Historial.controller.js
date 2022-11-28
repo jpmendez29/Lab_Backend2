@@ -1,3 +1,4 @@
+import { Verifytoken } from "../helper/generatetoken.js"
 import HistModel from "../Historial/Historial.model.js"
 
 // obtener el historial (token)

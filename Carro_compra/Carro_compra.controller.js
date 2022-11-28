@@ -34,43 +34,54 @@ export async function AddCar(req) {
     }
 }
 
-// se elimina el carrito (token)
-export async function DelProdCar(req) {
-    const token = req.headers.authorization.split(' ').pop()
-    const tokendata = await Verifytoken(token)
-    const Prod = CarModel.findOneAndDelete({Id_Usuario: tokendata._id})
-    return ("se elimino el carro con exito")
-}
-
 // se compra el carrito, se agrega al historia y se elimina el carrito  (token)
 export async function CompCar(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
     const Car = await CarModel.find({Id_Usuario: tokendata._id}) // se puede usar _id carro ambos son unicos dentro del modelo
     if (Car){
-        const Hist = new HistModel(
-            {  
-            Historial: Car[0],
-            Id_Usuario: tokendata._id
-            }
-            );
-        await Hist.save()
-        console.log("Carro comprado con exito")
-        console.log(await DelProdCar(req))
-        return ("Carro comprado con exito")
+        const Historial = await HistModel.find({Id_Usuario: tokendata._id})
+        if (Historial[0]){
+            await ActHist(Car[0], tokendata._id)
+            return await DelProdCar(req)
+        }else{
+            console.log(Car[0])
+            const Hist = new HistModel(
+                {  
+                Historial: [Car[0]],
+                Id_Usuario: tokendata._id
+                }
+                );
+            await Hist.save()
+            console.log("Carro comprado con exito")
+            await DelProdCar(req)
+            return ("Carro comprado con exito")   
+        }
     }else{
         return ("No hay productos a comprar")
     }
     
 }
 
+
+// se elimina el carrito (token)
+export async function DelCar(req) {
+    const token = req.headers.authorization.split(' ').pop()
+    const tokendata = await Verifytoken(token)
+    const Prod = await CarModel.findOneAndDelete({Id_Usuario: tokendata._id})
+    return ("se elimino el carro con exito")
+}
+
+
 // funciones internas 
 
+// busca un producto
 async function SerchProd (id){
     const Prod = await ProdModel.findById(id)
     return Prod
 }
 
+//actualizar el carrito
 async function ActCar(req, prod, id){
     const P = await CarModel.aggregate([
         { $match: {Id_Usuario : mongoose.Types.ObjectId(id)} },
@@ -79,4 +90,12 @@ async function ActCar(req, prod, id){
     const Prod = await CarModel.findOneAndUpdate({Id_Usuario: id}, {$push: {Productos: {id_prod: prod._id, Producto: prod.Nombre, Precio: prod.Precio, cantidad: req.body.cant}}, Total: P[0].newTotal})
     console.log("Producto agregado")
     return ("Producto agregado")
+}
+
+// actualizar el historial
+async function ActHist(Car, id){
+    console.log(Car)
+    const Prod = await HistModel.findOneAndUpdate({Id_Usuario: id}, {$push: {Historial: Car}})
+    console.log("Historial actualizado")
+    return ("Historial actualizado")
 }

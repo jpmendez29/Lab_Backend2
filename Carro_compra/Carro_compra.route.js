@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetCar, AddCar, DelProdCar, CompCar} from "./Carro_compra.controller.js"
+import {GetCar, AddCar, DelProdCar, CompCar, DelCar} from "./Carro_compra.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
@@ -36,7 +36,7 @@ router.patch('/',checkauth, async (req, res) => {
 
 // se elimina el carrito
 router.delete('/',checkauth, async (req, res) => {
-    const Car = await DelProdCar(req)
+    const Car = await DelCar(req)
     res.status(200).json(Car)
 });
 
