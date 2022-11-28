@@ -1,6 +1,8 @@
 import CarModel from "./Carro_compra.model.js";
 import ProdModel from "../Productos/Productos.model.js"
 import HistModel from "../Historial/Historial.model.js"
+import {Verifytoken} from "../helper/generatetoken.js"
+import mongoose from 'mongoose'
 
 // obtener carro usuario log (token)
 export async function GetCar(req) {
@@ -15,9 +17,9 @@ export async function AddCar(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
     const Car = await CarModel.find({Id_Usuario: tokendata._id}) // se puede usar _id carro ambos son unicos dentro del modelo
-    const prod = SerchProd(req.body.idprod)
-    if (Car){
-        return ActCar(req, prod[0], tokendata._id)
+    const prod = await SerchProd(req.body.idprod)
+    if (Car[0]){
+        return await ActCar(req, prod, tokendata._id)
     }else{
         const carm = new CarModel(
             {  
@@ -48,13 +50,13 @@ export async function CompCar(req) {
     if (Car){
         const Hist = new HistModel(
             {  
-            Historial: [Car[0]],
+            Historial: Car[0],
             Id_Usuario: tokendata._id
             }
             );
         await Hist.save()
         console.log("Carro comprado con exito")
-        await DelProdCar(req)
+        console.log(await DelProdCar(req))
         return ("Carro comprado con exito")
     }else{
         return ("No hay productos a comprar")
@@ -65,11 +67,16 @@ export async function CompCar(req) {
 // funciones internas 
 
 async function SerchProd (id){
-    const Prod = ProdModel.findById(id)
-    return Prod[0]
+    const Prod = await ProdModel.findById(id)
+    return Prod
 }
 
 async function ActCar(req, prod, id){
-    const Prod = ProdModel.findOneAndUpdate({Id_Usuario: id}, {$push: {Productos: {id_prod: prod._id, Producto: prod.Nombre, Precio: prod.Precio, cantidad: req.body.cant}}, Total: (prod.Precio * req.body.cant)})
-    return Prod
+    const P = await CarModel.aggregate([
+        { $match: {Id_Usuario : mongoose.Types.ObjectId(id)} },
+        {$project: { newTotal: { $add: ["$Total", (prod.Precio * req.body.cant)] } } }
+    ])
+    const Prod = await CarModel.findOneAndUpdate({Id_Usuario: id}, {$push: {Productos: {id_prod: prod._id, Producto: prod.Nombre, Precio: prod.Precio, cantidad: req.body.cant}}, Total: P[0].newTotal})
+    console.log("Producto agregado")
+    return ("Producto agregado")
 }
