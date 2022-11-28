@@ -1,22 +1,16 @@
 import express from 'express'
-import {createUser, getUsers, logIn} from "./Historial.controller.js"
+import {GetHist} from "./Historial.controller.js"
+import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const users = await getUsers(req.query, res)
-    res.status(200).json(users)
-});
 
-router.post('/', async (req, res) => {
-    const data = await createUser(req.body, res)
+// ****************** GET ******************
 
-    res.status(200).json(data)
-});
-
-router.post('/login', async (req, res) => {
-    const data = await logIn(req.body, res)
-    res.status(200).json(data)
+// se obtiene el carrito
+router.get('/', checkauth, async (req, res) => {
+    const Car = await GetHist(req)
+    res.status(200).json(Car)
 });
 
 
