@@ -35,10 +35,12 @@ router.post('/login', async (req, res) => {
     res.status(200).json(Token)
 });
 
-router.post('/login',checkauth, async (req, res) => {
+// Iniciar sesion con token
+router.post('/loginT',checkauth, async (req, res) => {
     const Token = await logInT(req)
     res.status(200).json(Token)
 });
+
 
 // ****************** PATCH ******************
 
