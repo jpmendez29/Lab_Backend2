@@ -1,9 +1,20 @@
 import CatModel from "./Cat_Productos.model.js";
 import { Verifytoken } from "../helper/generatetoken.js";
 
-// obtener todas las categorias
+// obtener todas las categorias (y quien la creo)
 export async function GetCat() {
-    const Cat = await CatModel.find()
+    const Cat = await CatModel.aggregate([
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
     return Cat
 }
 
@@ -17,8 +28,7 @@ export async function CreatCat(req) {
         }
     );
     await Cat.save()
-    console.log("Categoria creada con exito")
-    return Cat
+    return ("Categoria creada con exito")
 }
 
 // Actualiza una categoria (token)

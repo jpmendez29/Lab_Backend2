@@ -8,15 +8,14 @@ export async function getUsers() {
 }
 
 // Obtiene el usuario de la sesion (token) endpoint adicional
-export async function getUserslog(req, res) {
+export async function getUserslog(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
     const Us = await UsersModel.findById(tokendata._id,'Usuario Correo Contraseña -_id')
     if (Us){
-        console.log(Us)
         return Us
     }else{
-        res.status(409).json("no se encontro el usuario")
+        return("no se encontro el usuario")
     }
 }
 
@@ -25,12 +24,11 @@ export async function getUserslog(req, res) {
 export async function logIn(body) {
     const Us = await UsersModel.find({Usuario: body.us})
     if (Us){
-    if (Us[0].Contraseña == body.pasw){
-        return Signtoken(Us[0]) //token
-    }else{
-        console.log("usuario o contraseña incorrectos")
-        return ("usuario o contraseña incorrectos")
-    }
+        if (Us[0].Contraseña == body.pasw){
+            return Signtoken(Us[0]) //token
+        }else{
+            return ("usuario o contraseña incorrectos")
+        }
     }else{
         return("usuario o contraseña incorrectos")
     }
@@ -60,7 +58,6 @@ export async function createUser(body) {
         }
         );
     await Us.save()
-    console.log("Usuario creado con exito")
     return ("Usuario creado con exito")
 }
 

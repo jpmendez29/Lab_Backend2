@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 // Mostrar el usuario de la sesion
 router.get('/Logus', checkauth, async (req, res) => {
-    const users = await getUserslog(req, res)
+    const users = await getUserslog(req)
     res.status(200).json(users)
 });
 

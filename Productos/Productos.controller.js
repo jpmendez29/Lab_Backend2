@@ -85,7 +85,7 @@ export async function ProdNom(body){
 export async function ProdCat(body){
     const id_cat = await CatModel.findOne({Nombre: body.CatName})
     /* otra opcion es recibir el id de la categoria directamente
-    const prod = await ProdModel.find({id_Categoria: body.Catid})
+    {id_Categoria:  mongoose.Types.ObjectId(body.Catid)}
     */
     const Prod = await ProdModel.aggregate([
         {$match: {"Id_Categoria": mongoose.Types.ObjectId(id_cat._id)}},
@@ -126,7 +126,6 @@ export async function CreateProduct(req) {
         }
         );
     await Prod.save()
-    console.log("Producto creado con exito")
     return ("Producto creado con exito")
 }
 
