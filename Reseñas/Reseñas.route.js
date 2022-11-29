@@ -39,7 +39,7 @@ router.post('/', checkauth, async (req, res) => {
     res.status(200).json(data)
 });
 
-// ****************** PATCH ******************
+// ****************** PATCH *******************
 
 // Actualizar reseña (token)
 router.patch('/', checkauth, async (req, res)=> {
@@ -48,7 +48,7 @@ router.patch('/', checkauth, async (req, res)=> {
 });
 
 
-// ****************** DELETE ******************
+// ****************** DELETE *******************
 
 
 // Borrar una reseña (token)

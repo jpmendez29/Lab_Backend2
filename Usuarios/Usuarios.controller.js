@@ -34,8 +34,8 @@ export async function logIn(body) {
     }
 }
 
-
-// Inicia sesion (con token)
+ 
+// Inicia sesion (con el token)
 export async function logInT(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
@@ -61,6 +61,7 @@ export async function createUser(body) {
     return ("Usuario creado con exito")
 }
 
+
 // Actualizar un usuario (token)
 export async function ActUs(req){
     const token = req.headers.authorization.split(' ').pop()
@@ -68,7 +69,7 @@ export async function ActUs(req){
     const Us = await UsersModel.findByIdAndUpdate({_id: tokendata._id}, {Usuario:req.body.us, Correo: req.body.email, Contraseña: req.body.pasw})
     return ("se actualizo el usuario")
 }
-
+ 
 
 // Borrar una usuario (token)
 export async function DelUs(req){
