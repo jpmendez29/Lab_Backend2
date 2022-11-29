@@ -41,10 +41,14 @@ export async function logInT(req) {
     const tokendata = await Verifytoken(token)
     const Us = await UsersModel.findById(tokendata._id)
     if (Us){
-            return Signtoken(Us) //token con nuevo tiempo expiracion
+        if (Us.Contraseña == tokendata.Pasw){
+            return Signtoken(Us) //token
         }else{
-            return("No se encontro el usuario para el token")
+            return ("usuario o contraseña incorrectos")
         }
+    }else{
+        return("usuario o contraseña incorrectos")
+    }
 }
 
 
