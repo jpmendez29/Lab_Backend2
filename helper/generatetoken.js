@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 //generar token 
 export async function Signtoken (user) {
-    return jwt.sign({_id: user._id}, process.env.JWTKEY, {expiresIn: '2h'})
+    return jwt.sign({_id: user._id, User: user.Usuario, Pasw: user.Contraseña }, process.env.JWTKEY, {expiresIn: '2h'})
 }
 
 // verificar el token
