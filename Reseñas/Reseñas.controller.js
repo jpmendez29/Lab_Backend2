@@ -6,8 +6,28 @@ import {Verifytoken} from "../helper/generatetoken.js"
 
 // Obtiene todos las Reseñas
 export async function GetRes() {
-    const Res = await ReseñasModel.find()
-    return Res
+    const Prod = await ReseñasModel.aggregate([
+        {$lookup:{
+            from: "Producto",
+            localField: "Id_Producto",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Producto"
+            }
+        },
+        { $unwind: "$Producto"},
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Producto: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
+    return Prod
 }
 
 // obtener reseñas de un usuario 
