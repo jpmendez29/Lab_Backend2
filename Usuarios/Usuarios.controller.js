@@ -3,20 +3,19 @@ import {Signtoken,Verifytoken} from "../helper/generatetoken.js"
 
 // Obtiene todos los usuarios
 export async function getUsers() {
-    const Us = await UsersModel.find()
+    const Us = await UsersModel.find({},'Usuario Correo Contraseña -_id')
     return Us
 }
 
 // Obtiene el usuario de la sesion (token) endpoint adicional
-export async function getUserslog(req, res) {
+export async function getUserslog(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
-    const Us = await UsersModel.findById(tokendata._id)
+    const Us = await UsersModel.findById(tokendata._id,'Usuario Correo Contraseña -_id')
     if (Us){
-        console.log(Us)
         return Us
     }else{
-        res.status(409).json("no se encontro el usuario")
+        return("no se encontro el usuario")
     }
 }
 
@@ -25,12 +24,11 @@ export async function getUserslog(req, res) {
 export async function logIn(body) {
     const Us = await UsersModel.find({Usuario: body.us})
     if (Us){
-    if (Us[0].Contraseña == body.pasw){
-        return Signtoken(Us[0]) //token
-    }else{
-        console.log("usuario o contraseña incorrectos")
-        return ("usuario o contraseña incorrectos")
-    }
+        if (Us[0].Contraseña == body.pasw){
+            return Signtoken(Us[0]) //token
+        }else{
+            return ("usuario o contraseña incorrectos")
+        }
     }else{
         return("usuario o contraseña incorrectos")
     }
@@ -38,19 +36,14 @@ export async function logIn(body) {
 
 
 // Inicia sesion (con token)
-export async function logInT(body) {
+export async function logInT(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
     const Us = await UsersModel.findById(tokendata._id)
     if (Us){
-        if (Us[0].Contraseña == body.pasw){
-            return Signtoken(Us[0]) //token nuevo tiempo expiracion
+            return Signtoken(Us) //token con nuevo tiempo expiracion
         }else{
-            console.log("usuario o contraseña incorrectos")
-            return ("usuario o contraseña incorrectos")
-        }
-        }else{
-            return("usuario o contraseña incorrectos")
+            return("No se encontro el usuario para el token")
         }
 }
 
@@ -65,8 +58,7 @@ export async function createUser(body) {
         }
         );
     await Us.save()
-    console.log("Usuario creado con exito")
-    return Us
+    return ("Usuario creado con exito")
 }
 
 // Actualizar un usuario (token)

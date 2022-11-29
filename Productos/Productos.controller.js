@@ -1,19 +1,38 @@
 import ProdModel from "./Productos.model.js";
 import CatModel from "../Categorias de productos/Cat_Productos.model.js";
 import {Verifytoken} from "../helper/generatetoken.js"
+import mongoose from "mongoose";
 
 // Mostrar todos los productos
 export async function ProdAll(){
-    const Prod = await ProdModel.find()
-    console.log("se Mostraron todos los productos")
+    const Prod = await ProdModel.aggregate([
+        {$lookup:{
+            from: "Categoria",
+            localField: "Id_Categoria",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Categoria"
+            }
+        },
+        { $unwind: "$Categoria"},
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Categoria: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
     return Prod
 }
 
 
 // Mostrar productos de un usuario
 export async function ProdUs(body) {
-    const Prod = await ProdModel.find({Id_Usuario: body._idus})
-    console.log("se Mostraron los productos de un usuario")
+    const Prod = await buscprod(body._idus)
     return Prod
 }
 
@@ -21,8 +40,7 @@ export async function ProdUs(body) {
 export async function ProdUsT(req) {
     const token = req.headers.authorization.split(' ').pop()
     const tokendata = await Verifytoken(token)
-    const Prod = await ProdModel.find({Id_Usuario: tokendata._id})
-    console.log("se Mostraron los productos de un usuario")
+    const Prod = await buscprod(tokendata._id)
     return Prod
 }
 
@@ -37,20 +55,60 @@ export async function ProdIn(body){
 
 // Mostrar producto segun nombre 
 export async function ProdNom(body){
-    const Prod = await ProdModel.find({Nombre: body.ProdName})
-    console.log("se mostraron los productos segun Nombre")
+    const Prod = await ProdModel.aggregate([
+        {$match: {"Nombre": body.ProdName}},
+            {$lookup:{
+                from: "Categoria",
+                localField: "Id_Categoria",
+                foreignField: "_id",
+                pipeline: [{$project: { _id: 0, Nombre:1}}],
+                as: "Categoria"
+                }
+            },
+            { $unwind: "$Categoria"},
+            {$lookup:{
+                from: "Usuarios",
+                localField: "Id_Usuario",
+                foreignField: "_id",
+                pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+                as: "Usuario"
+                }
+            },
+            { $unwind: "$Usuario"},
+            {$project: { _id: 0, Id_Categoria: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
     return Prod
 }
 
 
 // Mostrar producto segun categoria 
 export async function ProdCat(body){
-    const id_cat = await CatModel.find({Nombre: body.CatName})
-    const Prod = await ProdModel.find({id_Categoria: id_cat[0]._id})
+    const id_cat = await CatModel.findOne({Nombre: body.CatName})
     /* otra opcion es recibir el id de la categoria directamente
-    const prod = await ProdModel.find({id_Categoria: body.Catid})
+    {id_Categoria:  mongoose.Types.ObjectId(body.Catid)}
     */
-    console.log("se Mostraron los productos segun categoria")
+    const Prod = await ProdModel.aggregate([
+        {$match: {"Id_Categoria": mongoose.Types.ObjectId(id_cat._id)}},
+        {$lookup:{
+            from: "Categoria",
+            localField: "Id_Categoria",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Categoria"
+            }
+        },
+        { $unwind: "$Categoria"},
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Categoria: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
     return Prod
 }
 
@@ -68,8 +126,7 @@ export async function CreateProduct(req) {
         }
         );
     await Prod.save()
-    console.log("Producto creado con exito")
-    return Prod
+    return ("Producto creado con exito")
 }
 
 
@@ -89,4 +146,23 @@ export async function DelProd(req){
     const tokendata = await Verifytoken(token)
     const Prod = await ProdModel.findOneAndDelete({_id: req.body._id, Id_Usuario:tokendata._id})
     return ('el producto fue borrado con exito')
+}
+
+
+// busqueda de producto por id_producto, segun usuario 
+async function buscprod(id){
+    const Prod = await ProdModel.aggregate([
+        {$match: {"Id_Usuario": mongoose.Types.ObjectId(id)}},
+        {$lookup:{
+            from: "Categoria",
+            localField: "Id_Categoria",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Categoria"
+            }
+        },
+        { $unwind: "$Categoria"},
+        {$project: { _id: 0, Id_Categoria: 0, Id_Usuario: 0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
+    return Prod
 }

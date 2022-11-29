@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 // Mostrar el usuario de la sesion
 router.get('/Logus', checkauth, async (req, res) => {
-    const users = await getUserslog(req, res)
+    const users = await getUserslog(req)
     res.status(200).json(users)
 });
 
@@ -35,10 +35,12 @@ router.post('/login', async (req, res) => {
     res.status(200).json(Token)
 });
 
-router.post('/login',checkauth, async (req, res) => {
+// Iniciar sesion con token
+router.post('/loginT',checkauth, async (req, res) => {
     const Token = await logInT(req)
     res.status(200).json(Token)
 });
+
 
 // ****************** PATCH ******************
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetCar, AddCar, DelProdCar, CompCar, DelCar} from "./Carro_compra.controller.js"
+import {GetCar, AddCar, CompCar, DelCar} from "./Carro_compra.controller.js"
 import { checkauth } from '../helper/generatetoken.js';
 
 const router = express.Router();
