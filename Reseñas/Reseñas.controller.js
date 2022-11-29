@@ -1,12 +1,12 @@
 import ReseñasModel from "./Reseñas.model.js";
 import UsersModel from "../Usuarios/Usuarios.model.js";
 import {Verifytoken} from "../helper/generatetoken.js"
-
+import mongoose from "mongoose";
 
 
 // Obtiene todos las Reseñas
 export async function GetRes() {
-    const Prod = await ReseñasModel.aggregate([
+    const Res = await ReseñasModel.aggregate([
         {$lookup:{
             from: "Producto",
             localField: "Id_Producto",
@@ -27,42 +27,90 @@ export async function GetRes() {
         { $unwind: "$Usuario"},
         {$project: { _id: 0, Id_Producto: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
     ])
-    return Prod
+    return Res
 }
 
 // obtener reseñas de un usuario 
 export async function GetResUs(body) {
     const us = await UsersModel.find({Usuario: body.us}) //usuario
-    const Res = await ReseñasModel.find({Id_Usuario: us[0]._id}) // id usuario
-    if (Res){
-        console.log(Res)
+        const Res = await ReseñasModel.aggregate([
+            {$match: {"Id_Usuario": mongoose.Types.ObjectId(us[0]._id)}},
+            {$lookup:{
+                from: "Producto",
+                localField: "Id_Producto",
+                foreignField: "_id",
+                pipeline: [{$project: { _id: 0, Nombre:1}}],
+                as: "Producto"
+                }
+            },
+            { $unwind: "$Producto"},
+            {$lookup:{
+                from: "Usuarios",
+                localField: "Id_Usuario",
+                foreignField: "_id",
+                pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+                as: "Usuario"
+                }
+            },
+            { $unwind: "$Usuario"},
+            {$project: { _id: 0, Id_Producto: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+        ])
         return Res
-    }else{
-        res.status(409).json("no se encontro reseñas de este usuario")
-    }
 }
 
 // obtener reseñas de un producto
 export async function GetResProd(body) {
-    const Res = await ReseñasModel.find({Id_Producto: body._id}) //id producto
-    if (Res){
-        console.log(Res)
-        return Res
-    }else{
-        res.status(409).json("no se encontro reseñas para este producto")
-    }
+    const Res = await ReseñasModel.aggregate([
+        {$match: {"Id_Producto": mongoose.Types.ObjectId(body._id)}},
+        {$lookup:{
+            from: "Producto",
+            localField: "Id_Producto",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Producto"
+            }
+        },
+        { $unwind: "$Producto"},
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Producto: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
+    return Res
 }
 
 
 // obtener reseñas segun puntuacion
 export async function GetResPunt(body) {
-    const Res = await ReseñasModel.find({Puntuacion: body.punt}) //Puntuacion
-    if (Res){
-        console.log(Res)
-        return Res
-    }else{
-        res.status(409).json("no se encontro reseñas para este producto")
-    }
+    const Res = await ReseñasModel.aggregate([
+        {$match: {"Puntuacion": Number(body.punt)}},
+        {$lookup:{
+            from: "Producto",
+            localField: "Id_Producto",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, Nombre:1}}],
+            as: "Producto"
+            }
+        },
+        { $unwind: "$Producto"},
+        {$lookup:{
+            from: "Usuarios",
+            localField: "Id_Usuario",
+            foreignField: "_id",
+            pipeline: [{$project: {_id: 0 ,Usuario: 1}}],
+            as: "Usuario"
+            }
+        },
+        { $unwind: "$Usuario"},
+        {$project: { _id: 0, Id_Producto: 0, Id_Usuario:0, createdAt: 0 , updatedAt:0, __v:0}},
+    ])
+    return Res
 }
 
 // Crear una reseña (token)
@@ -78,8 +126,7 @@ export async function CrearRes(req) {
         }
         );
     await Res.save()
-    console.log("Reseña creada con exito")
-    return Res
+    return ("Reseña creada con exito")
 }
 
 
