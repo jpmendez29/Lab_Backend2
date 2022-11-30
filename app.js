@@ -10,10 +10,13 @@ import CarRoute from './Carro_compra/Carro_compra.route.js'
 
 
 
-const [user,pasw] = [process.env.USER, process.env.PASW]
+const [user,pasw] = [process.env.DB_USER, process.env.PASW]
 
 
 export function TestApp() {
+
+    console.log(user +  "" + pasw)
+
     // MIDDLEWARE JSON
     const app = express();
 
@@ -31,11 +34,11 @@ export function TestApp() {
     });
 
     // rutas
-    app.use('/Users', userRoutes) // Usuarios
-    app.use('/Prod', ProdRoutes) // Productos
-    app.use('/Categ', CatRoutes) // Categorias
-    app.use('/Res', ResRoute) // Reseñas
-    app.use('/Hist', HistRoute) // Historial
+    app.use('/users', userRoutes) // Usuarios
+    app.use('/products', ProdRoutes) // Productos
+    app.use('/categories', CatRoutes) // Categorias
+    app.use('/reviews', ResRoute) // Reseñas
+    app.use('/records', HistRoute) // Historial
     app.use('/Car', CarRoute) // Carro de compra
 
     app.use(async (req, res) => {

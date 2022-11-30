@@ -22,10 +22,11 @@ export async function getUserslog(req) {
 
 // Inicia sesion (crear token)
 export async function logIn(body) {
-    const Us = await UsersModel.find({Usuario: body.us})
+    const Us = await UsersModel.findOne({Usuario: body.us})
+    console.log(Us)
     if (Us){
-        if (Us[0].Contraseña == body.pasw){
-            return Signtoken(Us[0]) //token
+        if (Us.Contraseña == body.pasw){
+            return Signtoken(Us) //token
         }else{
             return ("usuario o contraseña incorrectos")
         }
