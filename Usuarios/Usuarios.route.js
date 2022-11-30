@@ -26,7 +26,7 @@ router.get('/Logus', checkauth, async (req, res) => {
 // crear un usuario (registro)
 router.post('/CreateUs', async (req, res) => {
     const data = await createUser(req.body, res)
-    res.status(200).json(data)
+    res.status(201).json(data)
 });
 
 // Iniciar sesion 
@@ -58,6 +58,6 @@ router.patch('/', checkauth, async (req, res)=> {
 // Borrar un usuario (token)
 router.delete('/',checkauth, async (req, res)=> {
     const us = await DelUs(req, res)
-    res.status(200).json(us)
+    res.status(204).json(us)
 });
 export default router;
