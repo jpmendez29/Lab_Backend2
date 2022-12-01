@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // crear una categoria (token)
 router.post('/', checkauth, async (req, res) => {
     const Cat = await CreatCat(req)
-    res.status(200).json(Cat)
+    res.status(201).json(Cat)
 });
 
 
@@ -38,7 +38,7 @@ router.patch('/', checkauth, async (req, res)=> {
 // Borrar una categoria (token)
 router.delete('/',checkauth, async (req, res)=> {
     const Cat = await DelCat(req)
-    res.status(200).json(Cat)
+    res.status(204).json(Cat)
 });
 export default router;
 
