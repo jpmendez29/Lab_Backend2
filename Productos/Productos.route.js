@@ -55,7 +55,7 @@ router.get('/ProdCat', async (req, res) => {
 // Crear un producto (token)
 router.post('/', checkauth , async (req, res)=> {
     const Prod = await CreateProduct(req) // Nombre categoria, Nombre producto y Precio producto
-    res.status(200).json(Prod)
+    res.status(201).json(Prod)
 });
 
 
@@ -77,7 +77,7 @@ router.patch('/',checkauth, async (req, res)=> {
 // Borrar un producto (token)
 router.delete('/',checkauth, async (req, res)=> {
     const Prod = await DelProd(req) // _id_producto
-    res.status(200).json(Prod)
+    res.status(204).json(Prod)
 });
 
 

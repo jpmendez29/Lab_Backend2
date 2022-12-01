@@ -1,6 +1,6 @@
 import { App } from "../app";
 import request from "supertest";
-describe("#Reseñas", () => {
+describe("#Historial", () => {
   let app;
   let token = "";
   beforeAll(async () => {

@@ -23,7 +23,6 @@ export async function getUserslog(req) {
 // Inicia sesion (crear token)
 export async function logIn(body) {
     const Us = await UsersModel.findOne({Usuario: body.us})
-    console.log(Us)
     if (Us){
         if (Us.Contraseña == body.pasw){
             return Signtoken(Us) //token
