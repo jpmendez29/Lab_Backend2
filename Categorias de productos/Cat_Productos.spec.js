@@ -1,6 +1,6 @@
 import { App } from "../app";
 import request from "supertest";
-describe("#Reseñas", () => {
+describe("#Categorias", () => {
   function RandomWord(length) {
     let result = "";
     let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -18,7 +18,7 @@ describe("#Reseñas", () => {
   beforeAll(async () => {
     app = App();
     const username = "test" + Math.random().toString(24).split(2, 7);
-    category = Math.random().toString(24).split(2, 7);
+    category = RandomWord(10);
     await request(app)
       .post("/users/CreateUs")
       .send({
@@ -40,7 +40,7 @@ describe("#Reseñas", () => {
         .post("/categories/")
         .set("Authorization", `Bearer ${token}`)
         .send({
-          Cat: RandomWord(10),
+          Cat: category,
         });
       expect(resp.statusCode).toBe(201);
       expect(resp.body).toBe("Categoria creada con exito");
@@ -51,9 +51,8 @@ describe("#Reseñas", () => {
     it("should get all categories", async () => {
       const resp = await request(app).get("/categories/");
       expect(resp.statusCode).toBe(200);
-      expect(resp.body.length).toBeGreaterThan(0);
+      expect(Array.isArray(resp.body)).toBe(true);
       id = resp.body[resp.body.length - 1]._id;
-      console.log(id);
     });
   });
 
