@@ -151,13 +151,13 @@ export async function CreateProduct(req) {
 export async function ActProd(req) {
   const token = req.headers.authorization.split(" ").pop();
   const tokendata = await Verifytoken(token);
-  const id_cat = await CatModel.find({ Nombre: req.body.CatName });
+  const id_cat = await CatModel.findOne({ Nombre: req.body.CatName });
   const Prod = await ProdModel.findOneAndUpdate(
     { _id: req.body._id, Id_Usuario: tokendata._id },
     {
       Nombre: req.body.Nombre,
       Precio: req.body.Precio,
-      id_Categoria: id_cat[0]._id,
+      id_Categoria: id_cat ? id_cat._id : undefined,
     }
   );
   return "se actualizo el prodcuto";

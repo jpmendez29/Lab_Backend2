@@ -19,7 +19,7 @@ router.get('/',checkauth, async (req, res) => {
 // Se añaden productos al carrito
 router.post('/',checkauth, async (req, res) => {
     const Car = await AddCar(req)
-    res.status(200).json(Car)
+    res.status(201).json(Car)
 });
 
 
@@ -37,7 +37,7 @@ router.patch('/',checkauth, async (req, res) => {
 // se elimina el carrito
 router.delete('/',checkauth, async (req, res) => {
     const Car = await DelCar(req)
-    res.status(200).json(Car)
+    res.status(204).json(Car)
 });
 
 export default router;
